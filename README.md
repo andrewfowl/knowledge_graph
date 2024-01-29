@@ -73,6 +73,8 @@ Ollama makes it easy to host any model locally. Mistral 7B OpenOrca version is a
 To set up this project, you must install Ollama on your local machine. 
 
 Step 1: Install Ollama https://ollama.ai
+curl https://ollama.ai/install.sh | sh
+ollama serve
 
 Step 2: run `ollama run zephyr` in your terminal. This will pull the zephyr model to your local machine and start the Ollama server.
 
