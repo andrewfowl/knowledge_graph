@@ -26,11 +26,15 @@
 import pandas as pd
 import numpy as np
 import os
+import uuid
 from langchain.document_loaders import PyPDFLoader, UnstructuredPDFLoader, PyPDFium2Loader
 from langchain.document_loaders import PyPDFDirectoryLoader, DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pathlib import Path
 import random
+from openai import OpenAI
+import openai
+import json
 
 ## Input data directory
 data_dir = "coin"
@@ -64,6 +68,19 @@ print(pages[3].page_content)
 # ## Create a dataframe of all the chunks
 
 # %%
+def documents2Dataframe(documents) -> pd.DataFrame:
+    rows = []
+    for chunk in documents:
+        row = {
+            "text": chunk.page_content,
+            **chunk.metadata,
+            "chunk_id": uuid.uuid4().hex,
+        }
+        rows = rows + [row]
+
+    df = pd.DataFrame(rows)
+    return df
+
 from helpers.df_helpers import documents2Dataframe
 df = documents2Dataframe(pages)
 df.to_csv("df.csv", sep="|", index=False)
@@ -74,13 +91,6 @@ df.head()
 # ## Extract Concepts
 
 # %%
-
-from openai import OpenAI
-import pandas as pd
-import numpy as np
-import openai
-import json
-import os
 
 client = OpenAI(organization='org-A6mbTbr0FP5rFIEvwzMViNHR')
 selected_model = "gpt-4-0125-preview"
